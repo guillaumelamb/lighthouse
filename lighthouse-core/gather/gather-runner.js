@@ -159,12 +159,16 @@ class GatherRunner {
       ) {
         return new LHError(LHError.errors.DNS_FAILURE);
       } else {
-        return new LHError(LHError.errors.FAILED_DOCUMENT_REQUEST,
-          {errorDetails: `${netErr}`});
+        return new LHError(
+          LHError.errors.FAILED_DOCUMENT_REQUEST,
+          {errorDetails: `${netErr}`}
+        );
       }
     } else if (mainRecord.hasErrorStatusCode()) {
-      return new LHError(LHError.errors.ERRORED_DOCUMENT_REQUEST,
-        {statusCode: `${mainRecord.statusCode}`});
+      return new LHError(
+        LHError.errors.ERRORED_DOCUMENT_REQUEST,
+        {statusCode: `${mainRecord.statusCode}`}
+      );
     }
   }
 
