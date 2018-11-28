@@ -161,13 +161,13 @@ class GatherRunner {
       } else {
         return new LHError(
           LHError.errors.FAILED_DOCUMENT_REQUEST,
-          {errorDetails: `${netErr}`}
+          {errorDetails: netErr}
         );
       }
     } else if (mainRecord.hasErrorStatusCode()) {
       return new LHError(
         LHError.errors.ERRORED_DOCUMENT_REQUEST,
-        {statusCode: `${mainRecord.statusCode}`}
+        {statusCode: mainRecord.statusCode.toString()}
       );
     }
   }
@@ -184,7 +184,7 @@ class GatherRunner {
         .map(exp => exp.description);
       throw new LHError(
         LHError.errors.INSECURE_DOCUMENT_REQUEST,
-        {securityMessages: `${insecureDescriptions.join(' ')}`}
+        {securityMessages: insecureDescriptions.join(' ')}
       );
     }
   }
