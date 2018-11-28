@@ -147,14 +147,26 @@ class GatherRunner {
     });
 
     let errorDef;
-    let props;
+    /** @type {Record<string, string | boolean | undefined> | undefined} */
+    let props = {};
     if (!mainRecord) {
       errorDef = LHError.errors.NO_DOCUMENT_REQUEST;
     } else if (mainRecord.failed) {
-      errorDef = LHError.errors.FAILED_DOCUMENT_REQUEST;
-      props = {
-        errorDetails: `${mainRecord.localizedFailDescription}.`,
-      };
+      const netErr = mainRecord.localizedFailDescription;
+      // Match all resolution and DNS failures
+      // https://cs.chromium.org/chromium/src/net/base/net_error_list.h?rcl=cd62979b
+      if (
+        netErr === 'net::ERR_NAME_NOT_RESOLVED' ||
+        netErr === 'net::ERR_NAME_RESOLUTION_FAILED' ||
+        netErr.startsWith('net::ERR_DNS_')
+      ) {
+        errorDef = LHError.errors.DNS_FAILURE;
+      } else {
+        errorDef = LHError.errors.FAILED_DOCUMENT_REQUEST;
+        props = {
+          errorDetails: `${netErr}.`,
+        };
+      }
     } else if (mainRecord.hasErrorStatusCode()) {
       errorDef = LHError.errors.ERRORED_DOCUMENT_REQUEST;
       props = {
@@ -306,6 +318,8 @@ class GatherRunner {
     const networkRecords = NetworkRecorder.recordsFromLogs(devtoolsLog);
     log.timeEnd(status);
 
+    this.assertNoSecurityIssues(driver.getSecurityState());
+
     let pageLoadError = GatherRunner.getPageLoadError(passContext.url, networkRecords);
     // If the driver was offline, a page load error is expected, so do not save it.
     if (!driver.online) pageLoadError = undefined;
@@ -314,8 +328,6 @@ class GatherRunner {
       log.error('GatherRunner', pageLoadError.message, passContext.url);
       passContext.LighthouseRunWarnings.push(pageLoadError.friendlyMessage);
     }
-
-    this.assertNoSecurityIssues(driver.getSecurityState());
 
     // Expose devtoolsLog, networkRecords, and trace (if present) to gatherers
     /** @type {LH.Gatherer.LoadData} */

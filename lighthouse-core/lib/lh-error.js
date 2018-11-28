@@ -31,6 +31,10 @@ const UIStrings = {
   urlInvalid: 'The URL you have provided appears to be invalid.',
   /** Error message explaining that the Chrome Devtools protocol has exceeded the maximum timeout allowed. */
   protocolTimeout: 'Waiting for DevTools protocol response has exceeded the allotted time. Method: {protocolMethod}',
+  /** Error message explaining that the requested page could not be resolved by the DNS server. */
+  dnsFailure: 'DNS servers could not resolve the provided domain.',
+  /** Error message explaining that Lighthouse couldn't complete because the page has stopped responding to its instructions. */
+  pageLoadFailedHung: 'Lighthouse was unable to reliably load the URL you requested because the page stopped responding.',
 };
 
 const str_ = i18n.createMessageInstanceIdFn(__filename, UIStrings);
@@ -183,6 +187,12 @@ const ERRORS = {
     message: UIStrings.pageLoadFailedInsecure,
     lhrRuntimeError: true,
   },
+  /* Used when the page stopped responding and did not finish loading. */
+  PAGE_HUNG: {
+    code: 'PAGE_HUNG',
+    message: UIStrings.pageLoadFailedHung,
+    lhrRuntimeError: true,
+  },
 
   // Protocol internal failures
   TRACING_ALREADY_STARTED: {
@@ -216,6 +226,13 @@ const ERRORS = {
   PROTOCOL_TIMEOUT: {
     code: 'PROTOCOL_TIMEOUT',
     message: UIStrings.protocolTimeout,
+    lhrRuntimeError: true,
+  },
+
+  // DNS failure on main document (no resolution, timed out, etc)
+  DNS_FAILURE: {
+    code: 'DNS_FAILURE',
+    message: UIStrings.dnsFailure,
     lhrRuntimeError: true,
   },
 

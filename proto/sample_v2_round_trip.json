@@ -1952,7 +1952,7 @@
             "id": "themed-omnibox", 
             "score": 0.0, 
             "scoreDisplayMode": "binary", 
-            "title": "Address bar does not match brand colors"
+            "title": "Does not set an address-bar theme color"
         }, 
         "time-to-first-byte": {
             "description": "Time To First Byte identifies the time at which your server sends a response. [Learn more](https://developers.google.com/web/tools/lighthouse/audits/ttfb).", 
@@ -2548,15 +2548,14 @@
                 "items": [
                     {
                         "failures": [
-                            "No manifest was fetched", 
-                            "Site does not register a service worker"
+                            "No manifest was fetched"
                         ], 
                         "isParseFailure": true, 
                         "parseFailureReason": "No manifest was fetched"
                     }
                 ]
             }, 
-            "explanation": "Failures: No manifest was fetched,\nSite does not register a service worker.", 
+            "explanation": "Failures: No manifest was fetched.", 
             "id": "webapp-install-banner", 
             "score": 0.0, 
             "scoreDisplayMode": "binary", 
@@ -2574,7 +2573,7 @@
             "id": "works-offline", 
             "score": 0.0, 
             "scoreDisplayMode": "binary", 
-            "title": "Does not respond with a 200 when offline", 
+            "title": "Current page does not respond with a 200 when offline", 
             "warnings": []
         }
     }, 
@@ -3070,32 +3069,32 @@
                     "weight": 2.0
                 }, 
                 {
-                    "group": "pwa-engaging", 
+                    "group": "pwa-optimized", 
                     "id": "redirects-http", 
                     "weight": 2.0
                 }, 
                 {
-                    "group": "pwa-engaging", 
+                    "group": "pwa-optimized", 
                     "id": "splash-screen", 
                     "weight": 1.0
                 }, 
                 {
-                    "group": "pwa-engaging", 
+                    "group": "pwa-optimized", 
                     "id": "themed-omnibox", 
                     "weight": 1.0
                 }, 
                 {
-                    "group": "pwa-engaging", 
+                    "group": "pwa-optimized", 
                     "id": "content-width", 
                     "weight": 1.0
                 }, 
                 {
-                    "group": "pwa-engaging", 
+                    "group": "pwa-optimized", 
                     "id": "viewport", 
                     "weight": 2.0
                 }, 
                 {
-                    "group": "pwa-engaging", 
+                    "group": "pwa-optimized", 
                     "id": "without-javascript", 
                     "weight": 1.0
                 }, 
@@ -3235,14 +3234,14 @@
         "metrics": {
             "title": "Metrics"
         }, 
-        "pwa-engaging": {
-            "title": "Engaging"
-        }, 
         "pwa-fast-reliable": {
             "title": "Fast and reliable"
         }, 
         "pwa-installable": {
             "title": "Installable"
+        }, 
+        "pwa-optimized": {
+            "title": "PWA Optimized"
         }, 
         "seo-content": {
             "description": "Format your HTML in a way that enables crawlers to better understand your app\u2019s content.", 
@@ -3289,7 +3288,7 @@
             "warningHeader": "Warnings: "
         }
     }, 
-    "lighthouseVersion": "4.0.0-alpha.0", 
+    "lighthouseVersion": "4.0.0-alpha.1", 
     "requestedUrl": "http://localhost:10200/dobetterweb/dbw_tester.html", 
     "runWarnings": [], 
     "timing": {
@@ -3333,6 +3332,12 @@
             {
                 "duration": 100.0, 
                 "entryType": "measure", 
+                "name": "lh:computed:NetworkRecords", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
                 "name": "lh:audit:redirects-http", 
                 "startTime": 0.0
             }, 
@@ -3369,7 +3374,25 @@
             {
                 "duration": 100.0, 
                 "entryType": "measure", 
+                "name": "lh:computed:FirstContentfulPaint", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
+                "name": "lh:computed:TraceOfTab", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
                 "name": "lh:audit:first-meaningful-paint", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
+                "name": "lh:computed:FirstMeaningfulPaint", 
                 "startTime": 0.0
             }, 
             {
@@ -3381,7 +3404,25 @@
             {
                 "duration": 100.0, 
                 "entryType": "measure", 
+                "name": "lh:computed:Interactive", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
                 "name": "lh:audit:speed-index", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
+                "name": "lh:computed:SpeedIndex", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
+                "name": "lh:computed:Speedline", 
                 "startTime": 0.0
             }, 
             {
@@ -3399,7 +3440,19 @@
             {
                 "duration": 100.0, 
                 "entryType": "measure", 
+                "name": "lh:computed:Screenshots", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
                 "name": "lh:audit:estimated-input-latency", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
+                "name": "lh:computed:EstimatedInputLatency", 
                 "startTime": 0.0
             }, 
             {
@@ -3417,7 +3470,19 @@
             {
                 "duration": 100.0, 
                 "entryType": "measure", 
+                "name": "lh:computed:MainResource", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
                 "name": "lh:audit:first-cpu-idle", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
+                "name": "lh:computed:FirstCPUIdle", 
                 "startTime": 0.0
             }, 
             {
@@ -3441,13 +3506,61 @@
             {
                 "duration": 100.0, 
                 "entryType": "measure", 
+                "name": "lh:computed:CriticalRequestChains", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
                 "name": "lh:audit:redirects", 
                 "startTime": 0.0
             }, 
             {
                 "duration": 100.0, 
                 "entryType": "measure", 
+                "name": "lh:computed:LanternInteractive", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
+                "name": "lh:computed:LanternFirstMeaningfulPaint", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
+                "name": "lh:computed:LanternFirstContentfulPaint", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
+                "name": "lh:computed:PageDependencyGraph", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
+                "name": "lh:computed:LoadSimulator", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
+                "name": "lh:computed:NetworkAnalysis", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
                 "name": "lh:audit:webapp-install-banner", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
+                "name": "lh:computed:ManifestValues", 
                 "startTime": 0.0
             }, 
             {
@@ -3489,6 +3602,12 @@
             {
                 "duration": 100.0, 
                 "entryType": "measure", 
+                "name": "lh:computed:MainThreadTasks", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
                 "name": "lh:audit:bootup-time", 
                 "startTime": 0.0
             }, 
@@ -3496,6 +3615,12 @@
                 "duration": 100.0, 
                 "entryType": "measure", 
                 "name": "lh:audit:uses-rel-preload", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
+                "name": "lh:computed:LoadSimulator", 
                 "startTime": 0.0
             }, 
             {
@@ -3844,6 +3969,18 @@
                 "duration": 100.0, 
                 "entryType": "measure", 
                 "name": "lh:audit:render-blocking-resources", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
+                "name": "lh:computed:FirstContentfulPaint", 
+                "startTime": 0.0
+            }, 
+            {
+                "duration": 100.0, 
+                "entryType": "measure", 
+                "name": "lh:computed:LanternFirstContentfulPaint", 
                 "startTime": 0.0
             }, 
             {
