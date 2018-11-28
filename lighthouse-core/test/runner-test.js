@@ -625,8 +625,8 @@ describe('Runner', () => {
       assert.fail('should have thrown');
     } catch (err) {
       assert.equal(err.code, LHError.errors.PROTOCOL_TIMEOUT.code);
-      /* eslint-disable-next-line max-len */
-      expect(err.friendlyMessage).toBeDisplayString('Waiting for DevTools protocol response has exceeded the allotted time. Method: Method.Failure.');
+      assert.ok(/^Waiting for DevTools protocol.*Method: Method.Failure/.test(err.friendlyMessage),
+        'should have prevented run');
     }
   });
 
