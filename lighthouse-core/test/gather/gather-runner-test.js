@@ -1074,7 +1074,8 @@ describe('GatherRunner', function() {
         config: new Config({}),
       }).then(artifacts => {
         assert.equal(artifacts.LighthouseRunWarnings.length, 1);
-        expect(artifacts.LighthouseRunWarnings[0]).toBeDisplayString(/DNS servers could not resolve/);
+        expect(artifacts.LighthouseRunWarnings[0])
+          .toBeDisplayString(/DNS servers could not resolve/);
       });
     });
 

@@ -146,11 +146,8 @@ class GatherRunner {
       return URL.equalWithExcludedFragments(record.url, url);
     });
 
-    let errorDef;
-    /** @type {Record<string, string | boolean | undefined> | undefined} */
-    let props = {};
     if (!mainRecord) {
-      errorDef = LHError.errors.NO_DOCUMENT_REQUEST;
+      return new LHError(LHError.errors.NO_DOCUMENT_REQUEST);
     } else if (mainRecord.failed) {
       const netErr = mainRecord.localizedFailDescription;
       // Match all resolution and DNS failures
@@ -160,22 +157,14 @@ class GatherRunner {
         netErr === 'net::ERR_NAME_RESOLUTION_FAILED' ||
         netErr.startsWith('net::ERR_DNS_')
       ) {
-        errorDef = LHError.errors.DNS_FAILURE;
+        return new LHError(LHError.errors.DNS_FAILURE);
       } else {
-        errorDef = LHError.errors.FAILED_DOCUMENT_REQUEST;
-        props = {
-          errorDetails: `${netErr}.`,
-        };
+        return new LHError(LHError.errors.FAILED_DOCUMENT_REQUEST,
+          {errorDetails: `${netErr}`});
       }
     } else if (mainRecord.hasErrorStatusCode()) {
-      errorDef = LHError.errors.ERRORED_DOCUMENT_REQUEST;
-      props = {
-        statusCode: `${mainRecord.statusCode}.`,
-      };
-    }
-
-    if (errorDef) {
-      return new LHError(errorDef, props);
+      return new LHError(LHError.errors.ERRORED_DOCUMENT_REQUEST,
+        {statusCode: `${mainRecord.statusCode}`});
     }
   }
 
