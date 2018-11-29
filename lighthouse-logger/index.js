@@ -247,6 +247,7 @@ class Log {
           Log.timeEnd(status, timeEndLogLevel);
           return value;
         }).catch((/** @type {any} */ err) => {
+          Log.timeEnd(status, timeEndLogLevel);
           err.stack = err.stack.replace(/.* at timeDecoratedFn .*\n/, '');
           throw err;
         });
