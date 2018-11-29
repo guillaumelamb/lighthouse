@@ -74,7 +74,7 @@ and set an appropriate logging level in your code. You'll also need to pass
 the `logLevel` flag when calling `lighthouse`.
 
 ```javascript
-const log = require('../lib/log');
+const log = require('lighthouse-logger');
 
 const flags = {logLevel: 'info'};
 log.setLevel(flags.logLevel);
