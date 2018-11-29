@@ -167,7 +167,7 @@ class GatherRunner {
     } else if (mainRecord.hasErrorStatusCode()) {
       return new LHError(
         LHError.errors.ERRORED_DOCUMENT_REQUEST,
-        {statusCode: mainRecord.statusCode.toString()}
+        {statusCode: `${mainRecord.statusCode}`}
       );
     }
   }

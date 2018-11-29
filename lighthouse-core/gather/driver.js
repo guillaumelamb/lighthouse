@@ -280,10 +280,10 @@ class Driver {
     const timeout = this._nextProtocolTimeout;
     this._nextProtocolTimeout = DEFAULT_PROTOCOL_TIMEOUT;
     return new Promise(async (resolve, reject) => {
-      const asyncTimeout = setTimeout((_ => {
+      const asyncTimeout = setTimeout((() => {
         const err = new LHError(
           LHError.errors.PROTOCOL_TIMEOUT,
-          {protocolMethod: `${method}`}
+          {protocolMethod: method}
         );
         reject(err);
       }), timeout);
