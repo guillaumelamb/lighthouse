@@ -626,7 +626,7 @@ describe('Runner', () => {
     } catch (err) {
       assert.equal(err.code, LHError.errors.PROTOCOL_TIMEOUT.code);
       assert.ok(/^Waiting for DevTools protocol.*Method: Method.Failure/.test(err.friendlyMessage),
-        'should have prevented run');
+        'did not localize error message');
     }
   });
 
