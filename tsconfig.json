@@ -10,7 +10,7 @@
     // "noErrorTruncation": true,
     "typeRoots": [
       "@types",
-      "./typings"
+      "./types"
     ],
 
     "resolveJsonModule": true,
@@ -22,11 +22,10 @@
     "lighthouse-logger/**/*.js",
     "clients/**/*.js",
     "build/**/*.js",
-    "./typings/*.d.ts",
+    "./types/*.d.ts",
   ],
   "exclude": [
     "lighthouse-cli/test/**/*.js",
-    "lighthouse-core/report/html/third_party/",
     "lighthouse-core/test/**/*.js",
     "lighthouse-logger/test/**/*.js",
     "clients/test/**/*.js",
