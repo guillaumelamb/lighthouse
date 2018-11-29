@@ -203,26 +203,31 @@ class Log {
    */
   static timeDecorate(originalFn, opts) {
     /**
-     * @type {(this: T, ...args: Args) => R}
+     * @type {(this: *, ...args: *[]) => string}
      */
-    const fn = function timeDecoratedFn(...args) {
-      const timeStartLogLevel = opts.timeStartLogLevel || 'log';
-      const timeEndLogLevel = opts.timeEndLogLevel || 'verbose';
-
-      let msg;
+    const computeMsg = (_this, args) => {
+      let msg = '';
       if (typeof opts.msg === 'string') {
         msg = opts.msg;
       } else if (typeof opts.msg === 'function') {
-        msg = opts.msg.apply(this, args);
+        // TODO turn on --strictBindCallApply when tsc is upgraded to 3.2
+        msg = opts.msg.apply(_this, args);
       }
       if (!msg) {
         throw new Error('expected msg');
       }
+      return msg;
+    };
 
-      let id;
+    /**
+     * @type {(this: *, ...args: *[]) => string}
+     */
+    const computeId = (_this, args) => {
+      let id = '';
       if (typeof opts.id === 'string') {
         id = opts.id;
       } else if (typeof opts.id === 'function') {
+        // TODO turn on --strictBindCallApply when tsc is upgraded to 3.2
         id = opts.id.apply(this, args);
       } else {
         id = `lh:${originalFn.name}`;
@@ -230,8 +235,17 @@ class Log {
       if (!id) {
         throw new Error('expected id');
       }
+      return id;
+    };
 
-      const status = {msg, id};
+    /**
+     * @type {(this: T, ...args: Args) => R}
+     */
+    const fn = function timeDecoratedFn(...args) {
+      const timeStartLogLevel = opts.timeStartLogLevel || 'log';
+      const timeEndLogLevel = opts.timeEndLogLevel || 'verbose';
+
+      const status = {msg: computeMsg(this, args), id: computeId(this, args)};
       Log.time(status, timeStartLogLevel);
 
       let result;
