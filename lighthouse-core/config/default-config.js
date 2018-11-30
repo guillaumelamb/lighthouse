@@ -94,6 +94,7 @@ const defaultConfig = {
       'chrome-console-messages',
       'image-usage',
       'accessibility',
+      'external-resource-links',
       'dobetterweb/anchors-with-no-rel-noopener',
       'dobetterweb/appcache',
       'dobetterweb/doctype',

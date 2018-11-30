@@ -1,0 +1,63 @@
+/**
+ * @license Copyright 2018 Google Inc. All Rights Reserved.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ */
+'use strict';
+
+const Gatherer = require('./gatherer');
+const getElementsInDocumentString = require('../../lib/page-functions').getElementsInDocumentString;
+
+class ExternalResourceLinks extends Gatherer {
+  /**
+   * @param {LH.Gatherer.PassContext} passContext
+   * @return {Promise<LH.Artifacts['ExternalResourceLinks']>}
+   */
+  async afterPass(passContext) {
+    const driver = passContext.driver;
+
+    // TODO(phulce): merge this with the main resource header values too
+    // We'll use evaluateAsync because the `node.getAttribute` method doesn't actually normalize
+    // the values like access from JavaScript does.
+    return driver.evaluateAsync(`(() => {
+      ${getElementsInDocumentString};
+
+      return getElementsInDocument('link').map(link => {
+        return {
+          rel: link.rel,
+          href: link.href,
+          as: link.as,
+          crossorigin: link.crossorigin,
+        };
+      });
+    })()`, {useIsolation: true});
+
+    /** @type {Array<keyof LH.Artifacts.ExternalResourceLink>} */
+    const LINK_ATTRIBUTES = ['rel', 'href', 'as', 'crossorigin'];
+
+    const nodes = await driver.querySelectorAll('link');
+    const attributePromises = nodes.map(async node => {
+      /** @type {Array<[keyof LH.Artifacts.ExternalResourceLink, string|null]>} */
+      const values = await Promise.all(
+        LINK_ATTRIBUTES.map(
+          async attr => /** @type {[keyof LH.Artifacts.ExternalResourceLink, string|null]} */ ([
+            attr,
+            await node.getAttribute(attr),
+          ])
+        )
+      );
+
+      /** @type {LH.Artifacts.ExternalResourceLink} */
+      const attributes = {};
+      for (const [name, value] of values) {
+        attributes[name] = value === null ? undefined : value;
+      }
+
+      return attributes;
+    });
+
+    return Promise.all(attributePromises);
+  }
+}
+
+module.exports = ExternalResourceLinks;
