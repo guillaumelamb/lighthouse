@@ -252,6 +252,7 @@ class Log {
       try {
         result = originalFn.apply(this, args);
       } catch (err) {
+        Log.timeEnd(status, timeEndLogLevel);
         err.stack = err.stack.replace(/.* at timeDecoratedFn .*\n/g, '');
         throw err;
       }
