@@ -292,6 +292,9 @@ class Log {
       }
       /** @type {IsFunction<Class[typeof method]>} */
       const original = klass[method];
+      if (!original) {
+        throw new Error('Cannot decorate non-existent method ${method}');
+      }
       klass[method] = Log.timeDecorate(original, opts);
     }
   }
