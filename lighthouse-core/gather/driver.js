@@ -628,14 +628,13 @@ class Driver {
     /**
      * @param {Driver} driver
      * @param {() => void} resolve
-     * @param {(error:Error) => void} reject
      */
-    function checkForQuiet(driver, resolve, reject) {
-      if (cancelled) return;
+    function checkForQuiet(driver, resolve) {
+      if (cancelled) resolve();
 
       return driver.evaluateAsync(checkForQuietExpression)
         .then(timeSinceLongTask => {
-          if (cancelled) return;
+          if (cancelled) resolve();
 
           if (typeof timeSinceLongTask === 'number') {
             if (timeSinceLongTask >= waitForCPUQuiet) {
@@ -644,10 +643,10 @@ class Driver {
             } else {
               log.verbose('Driver', `CPU has been idle for ${timeSinceLongTask} ms`);
               const timeToWait = waitForCPUQuiet - timeSinceLongTask;
-              lastTimeout = setTimeout(() => checkForQuiet(driver, resolve, reject), timeToWait);
+              lastTimeout = setTimeout(() => checkForQuiet(driver, resolve), timeToWait);
             }
           }
-        }).catch(e => reject(e));
+        });
     }
 
     /** @type {(() => void)} */
@@ -655,7 +654,7 @@ class Driver {
       throw new Error('_waitForCPUIdle.cancel() called before it was defined');
     };
     const promise = new Promise((resolve, reject) => {
-      checkForQuiet(this, resolve, reject);
+      checkForQuiet(this, resolve).catch(reject);
       cancel = () => {
         cancelled = true;
         if (lastTimeout) clearTimeout(lastTimeout);
