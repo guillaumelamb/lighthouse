@@ -628,8 +628,9 @@ class Driver {
     /**
      * @param {Driver} driver
      * @param {() => void} resolve
+     * @param {(error:Error) => void} reject
      */
-    function checkForQuiet(driver, resolve) {
+    function checkForQuiet(driver, resolve, reject) {
       if (cancelled) return;
 
       return driver.evaluateAsync(checkForQuietExpression)
@@ -643,10 +644,10 @@ class Driver {
             } else {
               log.verbose('Driver', `CPU has been idle for ${timeSinceLongTask} ms`);
               const timeToWait = waitForCPUQuiet - timeSinceLongTask;
-              lastTimeout = setTimeout(() => checkForQuiet(driver, resolve), timeToWait);
+              lastTimeout = setTimeout(() => checkForQuiet(driver, resolve, reject), timeToWait);
             }
           }
-        });
+        }).catch(e => reject(e));
     }
 
     /** @type {(() => void)} */
@@ -654,7 +655,7 @@ class Driver {
       throw new Error('_waitForCPUIdle.cancel() called before it was defined');
     };
     const promise = new Promise((resolve, reject) => {
-      checkForQuiet(this, resolve);
+      checkForQuiet(this, resolve, reject);
       cancel = () => {
         cancelled = true;
         if (lastTimeout) clearTimeout(lastTimeout);
@@ -893,8 +894,8 @@ class Driver {
     // These can 'race' and that's OK.
     // We don't want to wait for Page.navigate's resolution, as it can now
     // happen _after_ onload: https://crbug.com/768961
-    this.sendCommand('Page.enable');
-    this.sendCommand('Emulation.setScriptExecutionDisabled', {value: disableJS});
+    await this.sendCommand('Page.enable');
+    await this.sendCommand('Emulation.setScriptExecutionDisabled', {value: disableJS});
     // No timeout needed for Page.navigate. See #6413.
     this._innerSendCommand('Page.navigate', {url});
 
