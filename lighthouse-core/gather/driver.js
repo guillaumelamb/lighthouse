@@ -630,11 +630,11 @@ class Driver {
      * @param {() => void} resolve
      */
     function checkForQuiet(driver, resolve) {
-      if (cancelled) resolve();
+      if (cancelled) return Promise.resolve();
 
       return driver.evaluateAsync(checkForQuietExpression)
         .then(timeSinceLongTask => {
-          if (cancelled) resolve();
+          if (cancelled) return Promise.resolve();
 
           if (typeof timeSinceLongTask === 'number') {
             if (timeSinceLongTask >= waitForCPUQuiet) {
