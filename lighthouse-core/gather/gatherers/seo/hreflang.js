@@ -7,8 +7,6 @@
 
 const Gatherer = require('../gatherer');
 
-// TODO(phulce): remove this in favor of LinkElements gatherer
-
 class Hreflang extends Gatherer {
   /**
    * @param {LH.Gatherer.PassContext} passContext
