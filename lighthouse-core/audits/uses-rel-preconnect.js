@@ -30,8 +30,7 @@ const UIStrings = {
     'Consider adding preconnect or dns-prefetch resource hints to establish early ' +
     `connections to important third-party origins. [Learn more](https://developers.google.com/web/fundamentals/performance/resource-prioritization#preconnect).`,
   /** A warning message that is shown when the user tried to follow the advice of the audit, but it's not working as expected. Forgetting to set the `crossorigin` HTML attribute on the link is a common mistake when adding preconnect links. */
-  crossoriginWarning: 'A preconnect link was found for "{securityOrigin}" but was not used. ' +
-    'Check to make sure you are using the appropriate `crossorigin` attribute value.',
+  crossoriginWarning: 'A preconnect link was found for "{securityOrigin}" but was not used.',
 };
 
 const str_ = i18n.createMessageInstanceIdFn(__filename, UIStrings);
