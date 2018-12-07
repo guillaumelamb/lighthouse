@@ -728,8 +728,8 @@ describe('GatherRunner', function() {
       } catch (err) {
         assert.equal(err.message, 'INSECURE_DOCUMENT_REQUEST');
         assert.equal(err.code, 'INSECURE_DOCUMENT_REQUEST');
-        /* eslint-disable-next-line max-len */
-        expect(err.friendlyMessage).toBeDisplayString('The URL you have provided does not have valid security credentials. reason 1 reason 2.');
+        expect(err.friendlyMessage)
+          .toBeDisplayString(/The URL.*security credentials.*reason 1 reason 2/);
       }
     });
   });
