@@ -31,32 +31,6 @@ class ExternalResourceLinks extends Gatherer {
         };
       });
     })()`, {useIsolation: true});
-
-    /** @type {Array<keyof LH.Artifacts.ExternalResourceLink>} */
-    const LINK_ATTRIBUTES = ['rel', 'href', 'as', 'crossorigin'];
-
-    const nodes = await driver.querySelectorAll('link');
-    const attributePromises = nodes.map(async node => {
-      /** @type {Array<[keyof LH.Artifacts.ExternalResourceLink, string|null]>} */
-      const values = await Promise.all(
-        LINK_ATTRIBUTES.map(
-          async attr => /** @type {[keyof LH.Artifacts.ExternalResourceLink, string|null]} */ ([
-            attr,
-            await node.getAttribute(attr),
-          ])
-        )
-      );
-
-      /** @type {LH.Artifacts.ExternalResourceLink} */
-      const attributes = {};
-      for (const [name, value] of values) {
-        attributes[name] = value === null ? undefined : value;
-      }
-
-      return attributes;
-    });
-
-    return Promise.all(attributePromises);
   }
 }
 
