@@ -18,11 +18,11 @@ const UIStrings = {
   /** Error message explaining that Lighthouse could not load the requested URL and the steps that might be taken to fix the unreliability. */
   pageLoadFailed: 'Lighthouse was unable to reliably load the page you requested. Make sure you are testing the correct URL and that the server is properly responding to all requests.',
   /** Error message explaining that Lighthouse could not load the requested URL and the steps that might be taken to fix the unreliability. */
-  pageLoadFailedWithStatusCode: 'Lighthouse was unable to reliably load the page you requested. Make sure you are testing the correct URL and that the server is properly responding to all requests.  Status Code: {statusCode}.',
+  pageLoadFailedWithStatusCode: 'Lighthouse was unable to reliably load the page you requested. Make sure you are testing the correct URL and that the server is properly responding to all requests. (Status code: {statusCode})',
   /** Error message explaining that Lighthouse could not load the requested URL and the steps that might be taken to fix the unreliability. */
-  pageLoadFailedWithDetails: 'Lighthouse was unable to reliably load the page you requested. Make sure you are testing the correct URL and that the server is properly responding to all requests. Detailed Error: {errorDetails}.',
+  pageLoadFailedWithDetails: 'Lighthouse was unable to reliably load the page you requested. Make sure you are testing the correct URL and that the server is properly responding to all requests. (Details: {errorDetails})',
   /** Error message explaining that the credentials included in the Lighthouse run were invalid, so the URL cannot be accessed. */
-  pageLoadFailedInsecure: 'The URL you have provided does not have valid security credentials. {securityMessages}.',
+  pageLoadFailedInsecure: 'The URL you have provided does not have valid security credentials. ({securityMessages})',
   /** Error message explaining that Chrome has encountered an error during the Lighthouse run, and that Chrome should be restarted. */
   internalChromeError: 'An internal Chrome error occurred. Please restart Chrome and try re-running Lighthouse.',
   /** Error message explaining that fetching the resources of the webpage has taken longer than the maximum time. */
@@ -30,7 +30,7 @@ const UIStrings = {
   /** Error message explaining that the provided URL Lighthouse points to is not valid, and cannot be loaded. */
   urlInvalid: 'The URL you have provided appears to be invalid.',
   /** Error message explaining that the Chrome Devtools protocol has exceeded the maximum timeout allowed. */
-  protocolTimeout: 'Waiting for DevTools protocol response has exceeded the allotted time. Method: {protocolMethod}.',
+  protocolTimeout: 'Waiting for DevTools protocol response has exceeded the allotted time. (Method: {protocolMethod})',
   /** Error message explaining that the requested page could not be resolved by the DNS server. */
   dnsFailure: 'DNS servers could not resolve the provided domain.',
   /** Error message explaining that Lighthouse couldn't complete because the page has stopped responding to its instructions. */
