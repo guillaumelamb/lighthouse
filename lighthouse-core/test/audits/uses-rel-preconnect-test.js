@@ -30,7 +30,7 @@ describe('Performance: uses-rel-preconnect audit', () => {
       },
     ];
     const artifacts = {
-      ExternalResourceLinks: [],
+      LinkElements: [],
       devtoolsLogs: {[UsesRelPreconnect.DEFAULT_PASS]: networkRecordsToDevtoolsLog(networkRecords)},
       URL: {finalUrl: mainResource.url},
     };
@@ -55,7 +55,7 @@ describe('Performance: uses-rel-preconnect audit', () => {
       },
     ];
     const artifacts = {
-      ExternalResourceLinks: [],
+      LinkElements: [],
       devtoolsLogs: {[UsesRelPreconnect.DEFAULT_PASS]: networkRecordsToDevtoolsLog(networkRecords)},
       URL: {finalUrl: mainResource.url},
     };
@@ -77,7 +77,7 @@ describe('Performance: uses-rel-preconnect audit', () => {
       },
     ];
     const artifacts = {
-      ExternalResourceLinks: [],
+      LinkElements: [],
       devtoolsLogs: {[UsesRelPreconnect.DEFAULT_PASS]: networkRecordsToDevtoolsLog(networkRecords)},
       URL: {finalUrl: mainResource.url},
     };
@@ -105,7 +105,7 @@ describe('Performance: uses-rel-preconnect audit', () => {
       },
     ];
     const artifacts = {
-      ExternalResourceLinks: [],
+      LinkElements: [],
       devtoolsLogs: {[UsesRelPreconnect.DEFAULT_PASS]: networkRecordsToDevtoolsLog(networkRecords)},
       URL: {finalUrl: mainResource.url},
     };
@@ -128,7 +128,7 @@ describe('Performance: uses-rel-preconnect audit', () => {
       },
     ];
     const artifacts = {
-      ExternalResourceLinks: [],
+      LinkElements: [],
       devtoolsLogs: {[UsesRelPreconnect.DEFAULT_PASS]: networkRecordsToDevtoolsLog(networkRecords)},
       URL: {finalUrl: mainResource.url},
     };
@@ -156,7 +156,7 @@ describe('Performance: uses-rel-preconnect audit', () => {
       },
     ];
     const artifacts = {
-      ExternalResourceLinks: [{rel: 'preconnect', href: 'https://cdn.example.com/'}],
+      LinkElements: [{rel: 'preconnect', href: 'https://cdn.example.com/'}],
       devtoolsLogs: {[UsesRelPreconnect.DEFAULT_PASS]: networkRecordsToDevtoolsLog(networkRecords)},
       URL: {finalUrl: mainResource.url},
     };
@@ -195,7 +195,7 @@ describe('Performance: uses-rel-preconnect audit', () => {
       },
     ];
     const artifacts = {
-      ExternalResourceLinks: [],
+      LinkElements: [],
       devtoolsLogs: {[UsesRelPreconnect.DEFAULT_PASS]: networkRecordsToDevtoolsLog(networkRecords)},
       URL: {finalUrl: mainResource.url},
     };
@@ -236,7 +236,7 @@ describe('Performance: uses-rel-preconnect audit', () => {
       },
     ];
     const artifacts = {
-      ExternalResourceLinks: [],
+      LinkElements: [],
       devtoolsLogs: {[UsesRelPreconnect.DEFAULT_PASS]: networkRecordsToDevtoolsLog(networkRecords)},
       URL: {finalUrl: mainResource.url},
     };

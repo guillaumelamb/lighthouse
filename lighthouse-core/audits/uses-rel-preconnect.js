@@ -45,7 +45,7 @@ class UsesRelPreconnectAudit extends Audit {
       id: 'uses-rel-preconnect',
       title: str_(UIStrings.title),
       description: str_(UIStrings.description),
-      requiredArtifacts: ['devtoolsLogs', 'URL', 'ExternalResourceLinks'],
+      requiredArtifacts: ['devtoolsLogs', 'URL', 'LinkElements'],
       scoreDisplayMode: Audit.SCORING_MODES.NUMERIC,
     };
   }
@@ -90,7 +90,7 @@ class UsesRelPreconnectAudit extends Audit {
   static async audit(artifacts, context) {
     const devtoolsLog = artifacts.devtoolsLogs[UsesRelPreconnectAudit.DEFAULT_PASS];
     const settings = context.settings;
-    const preconnectLinks = artifacts.ExternalResourceLinks.filter(el => el.rel === 'preconnect');
+    const preconnectLinks = artifacts.LinkElements.filter(el => el.rel === 'preconnect');
     const preconnectOrigins = new Set(preconnectLinks.map(link => URL.getOrigin(link.href || '')));
     let maxWasted = 0;
     /** @type {string[]} */

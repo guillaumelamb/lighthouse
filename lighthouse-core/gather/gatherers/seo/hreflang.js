@@ -7,7 +7,7 @@
 
 const Gatherer = require('../gatherer');
 
-// TODO(phulce): remove this in favor of ExternalResourceLinks gatherer
+// TODO(phulce): remove this in favor of LinkElements gatherer
 
 class Hreflang extends Gatherer {
   /**

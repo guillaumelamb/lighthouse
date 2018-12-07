@@ -8,10 +8,10 @@
 const Gatherer = require('./gatherer');
 const getElementsInDocumentString = require('../../lib/page-functions').getElementsInDocumentString;
 
-class ExternalResourceLinks extends Gatherer {
+class LinkElements extends Gatherer {
   /**
    * @param {LH.Gatherer.PassContext} passContext
-   * @return {Promise<LH.Artifacts['ExternalResourceLinks']>}
+   * @return {Promise<LH.Artifacts['LinkElements']>}
    */
   async afterPass(passContext) {
     const driver = passContext.driver;
@@ -34,4 +34,4 @@ class ExternalResourceLinks extends Gatherer {
   }
 }
 
-module.exports = ExternalResourceLinks;
+module.exports = LinkElements;
