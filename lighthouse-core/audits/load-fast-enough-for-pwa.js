@@ -15,13 +15,29 @@ const isDeepEqual = require('lodash.isequal');
 const Audit = require('./audit');
 const mobileThrottling = require('../config/constants').throttling.mobileSlow4G;
 const Interactive = require('../computed/metrics/interactive.js');
-
-const displayValueText = `Interactive at %d\xa0s`;
-const displayValueTextWithOverride = `Interactive on simulated mobile network at %d\xa0s`;
+const i18n = require('../lib/i18n/i18n.js');
 
 // Maximum TTI to be considered "fast" for PWA baseline checklist
 //   https://developers.google.com/web/progressive-web-apps/checklist
 const MAXIMUM_TTI = 10 * 1000;
+
+const UIStrings = {
+  /** */
+  title: 'Page load is fast enough on mobile networks',
+  /** */
+  failureTitle: 'Page load is not fast enough on mobile networks',
+  /** */
+  description:
+    'A fast page load over a cellular network ensures a good mobile user experience. ' +
+    '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/fast-3g).',
+  /** */
+  displayValueText: 'Interactive at {timing, number, seconds}\xa0s',
+  /** */
+  displayValueTextWithOverride: 'Interactive on simulated mobile network at ' +
+  '{timing, number, seconds}\xa0s',
+};
+
+const str_ = i18n.createMessageInstanceIdFn(__filename, UIStrings);
 
 class LoadFastEnough4Pwa extends Audit {
   /**
@@ -30,11 +46,9 @@ class LoadFastEnough4Pwa extends Audit {
   static get meta() {
     return {
       id: 'load-fast-enough-for-pwa',
-      title: 'Page load is fast enough on mobile networks',
-      failureTitle: 'Page load is not fast enough on mobile networks',
-      description:
-        'A fast page load over a cellular network ensures a good mobile user experience. ' +
-        '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/fast-3g).',
+      title: str_(UIStrings.title),
+      failureTitle: str_(UIStrings.failureTitle),
+      description: str_(UIStrings.description),
       requiredArtifacts: ['traces', 'devtoolsLogs'],
     };
   }
@@ -57,7 +71,8 @@ class LoadFastEnough4Pwa extends Audit {
     const override = context.settings.throttlingMethod === 'provided' ||
       !isDeepEqual(context.settings.throttling, mobileThrottling);
 
-    const displayValueFinal = override ? displayValueTextWithOverride : displayValueText;
+    const displayValueFinal = override ?
+      UIStrings.displayValueTextWithOverride : UIStrings.displayValueText;
 
     const settings = override ? Object.assign({}, context.settings, settingOverrides) :
       context.settings;
@@ -72,7 +87,7 @@ class LoadFastEnough4Pwa extends Audit {
     /** @type {string|undefined} */
     let explanation;
     if (!score) {
-      displayValue = [displayValueFinal, tti.timing / 1000];
+      displayValue = str_(displayValueFinal, {timing: tti.timing / 1000});
       explanation = 'Your page loads too slowly and is not interactive within 10 seconds. ' +
         'Look at the opportunities and diagnostics in the "Performance" section to learn how to ' +
         'improve.';
@@ -88,3 +103,4 @@ class LoadFastEnough4Pwa extends Audit {
 }
 
 module.exports = LoadFastEnough4Pwa;
+module.exports.UIStrings = UIStrings;

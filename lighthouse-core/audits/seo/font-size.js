@@ -8,9 +8,25 @@
 /** @typedef {LH.Artifacts.FontSize['analyzedFailingNodesData'][0]} FailingNodeData */
 
 const URL = require('../../lib/url-shim');
+const i18n = require('../../lib/i18n/i18n.js');
 const Audit = require('../audit');
 const ViewportAudit = require('../viewport');
 const MINIMAL_PERCENTAGE_OF_LEGIBLE_TEXT = 60;
+
+const UIStrings = {
+  /**  */
+  title: 'Document uses legible font sizes',
+  /** */
+  failureTitle: 'Document doesn\'t use legible font sizes',
+  /** */
+  description: 'Font sizes less than 12px are too small to be legible and require mobile ' +
+      'visitors to “pinch to zoom” in order to read. Strive to have >60% of page text ≥12px. ' +
+      '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/font-sizes).',
+  /** */
+  displayValue: '{percentageOfPassingText, number, percent}\xa0% legible text',
+};
+
+const str_ = i18n.createMessageInstanceIdFn(__filename, UIStrings);
 
 /**
  * @param {Array<FailingNodeData>} fontSizeArtifact
@@ -182,11 +198,9 @@ class FontSize extends Audit {
   static get meta() {
     return {
       id: 'font-size',
-      title: 'Document uses legible font sizes',
-      failureTitle: 'Document doesn\'t use legible font sizes',
-      description: 'Font sizes less than 12px are too small to be legible and require mobile ' +
-      'visitors to “pinch to zoom” in order to read. Strive to have >60% of page text ≥12px. ' +
-      '[Learn more](https://developers.google.com/web/tools/lighthouse/audits/font-sizes).',
+      title: str_(UIStrings.title),
+      failureTitle: str_(UIStrings.failureTitle),
+      description: str_(UIStrings.description),
       requiredArtifacts: ['FontSize', 'URL', 'Viewport'],
     };
   }
@@ -266,7 +280,7 @@ class FontSize extends Audit {
     }
 
     /** @type {LH.Audit.DisplayValue} */
-    const displayValue = ['%.1d% legible text', percentageOfPassingText];
+    const displayValue = str_(UIStrings.displayValue, {percentageOfPassingText});
     const details = Audit.makeTableDetails(headings, tableData);
     const passed = percentageOfPassingText >= MINIMAL_PERCENTAGE_OF_LEGIBLE_TEXT;
 
@@ -294,3 +308,4 @@ class FontSize extends Audit {
 }
 
 module.exports = FontSize;
+module.exports.UIStrings = UIStrings;
