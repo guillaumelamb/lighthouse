@@ -43,19 +43,18 @@ function processForProto(result) {
     Object.keys(reportJson.audits).forEach(auditName => {
       const audit = reportJson.audits[auditName];
 
-      // Rewrite the 'not-applicable' scoreDisplayMode to 'not_applicable'. #6201
+      // Rewrite 'not-applicable' and 'not_applicable' scoreDisplayMode to 'notApplicable'. #6201, #6783.
       if (audit.scoreDisplayMode) {
-        if (audit.scoreDisplayMode === 'not-applicable') {
-          // @ts-ignore Breaking the LH.Result type
-          audit.scoreDisplayMode = 'not_applicable';
+        // @ts-ignore ts properly flags this as invalid as it should not happen,
+        // but remains in preprocessor to protect from proto translation errors from
+        // old LHRs.
+        // eslint-disable-next-line max-len
+        if (audit.scoreDisplayMode === 'not-applicable' || audit.scoreDisplayMode === 'not_applicable') {
+          audit.scoreDisplayMode = 'notApplicable';
         }
       }
-      // Drop raw values. #6199
-      if ('rawValue' in audit) {
-        delete audit.rawValue;
-      }
-      // Normalize displayValue to always be a string, not an array. #6200
 
+      // Normalize displayValue to always be a string, not an array. #6200
       if (Array.isArray(audit.displayValue)) {
         /** @type {Array<any>}*/
         const values = [];

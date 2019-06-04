@@ -16,7 +16,7 @@
  * This gatherer collects stylesheet metadata by itself, instead of relying on the styles gatherer which is slow (because it parses the stylesheet content).
  */
 
-const Gatherer = require('../gatherer');
+const Gatherer = require('../gatherer.js');
 const Sentry = require('../../../lib/sentry.js');
 const FONT_SIZE_PROPERTY_NAME = 'font-size';
 const TEXT_NODE_BLOCK_LIST = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT']);
@@ -182,7 +182,8 @@ function getEffectiveFontRule({inlineStyle, matchedCSSRules, inherited}) {
  * @returns {number}
  */
 function getNodeTextLength(node) {
-  return !node.nodeValue ? 0 : node.nodeValue.trim().length;
+  // Array.from to count symbols not unicode code points. See: #6973
+  return !node.nodeValue ? 0 : Array.from(node.nodeValue.trim()).length;
 }
 
 /**

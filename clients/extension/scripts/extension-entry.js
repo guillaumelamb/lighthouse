@@ -5,12 +5,12 @@
  */
 'use strict';
 
-const lighthouse = require('../../../lighthouse-core/index');
-const Config = require('../../../lighthouse-core/config/config');
+const lighthouse = require('../../../lighthouse-core/index.js');
+const Config = require('../../../lighthouse-core/config/config.js');
 const defaultConfig = require('../../../lighthouse-core/config/default-config.js');
 const i18n = require('../../../lighthouse-core/lib/i18n/i18n.js');
 
-const ExtensionProtocol = require('../../../lighthouse-core/gather/connections/extension');
+const ExtensionProtocol = require('../../../lighthouse-core/gather/connections/extension.js');
 const log = require('lighthouse-logger');
 
 /** @typedef {import('../../../lighthouse-core/gather/connections/connection.js')} Connection */
@@ -76,12 +76,13 @@ function updateBadgeUI(optUrl) {
 /**
  * @param {LH.Flags} flags Lighthouse flags.
  * @param {Array<string>} categoryIDs Name values of categories to include.
- * @return {Promise<LH.RunnerResult|void>}
+ * @return {Promise<LH.RunnerResult>}
  */
 async function runLighthouseInExtension(flags, categoryIDs) {
   // Default to 'info' logging level.
   flags.logLevel = flags.logLevel || 'info';
   flags.output = 'html';
+  flags.channel = 'extension';
 
   const connection = new ExtensionProtocol();
   const url = await connection.getCurrentTabURL();
@@ -104,6 +105,8 @@ async function runLighthouseInExtension(flags, categoryIDs) {
   const reportHtml = /** @type {string} */ (runnerResult.report);
   const blobURL = createReportPageAsBlob(reportHtml);
   await new Promise(resolve => chrome.windows.create({url: blobURL}, resolve));
+
+  return runnerResult;
 }
 
 /**

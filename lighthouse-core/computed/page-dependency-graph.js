@@ -30,9 +30,23 @@ class PageDependencyGraph {
   static getNetworkInitiators(record) {
     if (!record.initiator) return [];
     if (record.initiator.url) return [record.initiator.url];
-    if (record.initiator.type === 'script' && record.initiator.stack) {
-      const frames = record.initiator.stack.callFrames;
-      return Array.from(new Set(frames.map(frame => frame.url))).filter(Boolean);
+    if (record.initiator.type === 'script') {
+      // Script initiators have the stack of callFrames from all functions that led to this request.
+      // If async stacks are enabled, then the stack will also have the parent functions that asynchronously
+      // led to this request chained in the `parent` property.
+      /** @type {Set<string>} */
+      const scriptURLs = new Set();
+      let stack = record.initiator.stack;
+      while (stack) {
+        const callFrames = stack.callFrames || [];
+        for (const frame of callFrames) {
+          if (frame.url) scriptURLs.add(frame.url);
+        }
+
+        stack = stack.parent;
+      }
+
+      return Array.from(scriptURLs);
     }
 
     return [];
@@ -133,9 +147,9 @@ class PageDependencyGraph {
         rootNode.addDependent(node);
       }
 
-      const redirects = Array.from(node.record.redirects || []);
-      redirects.push(node.record);
+      if (!node.record.redirects) return;
 
+      const redirects = [...node.record.redirects, node.record];
       for (let i = 1; i < redirects.length; i++) {
         const redirectNode = networkNodeOutput.idToNodeMap.get(redirects[i - 1].requestId);
         const actualNode = networkNodeOutput.idToNodeMap.get(redirects[i].requestId);
@@ -269,14 +283,23 @@ class PageDependencyGraph {
     const networkNodeOutput = PageDependencyGraph.getNetworkNodeOutput(networkRecords);
     const cpuNodes = PageDependencyGraph.getCPUNodes(traceOfTab);
 
-    const rootRequest = networkRecords.reduce((min, r) => (min.startTime < r.startTime ? min : r));
+    // The root request is the earliest network request, using position in networkRecords array to break ties.
+    const rootRequest = networkRecords.reduce((min, r) => (r.startTime < min.startTime ? r : min));
     const rootNode = networkNodeOutput.idToNodeMap.get(rootRequest.requestId);
+    // The main document request is the earliest network request *of type document*.
+    // This will be different from the root request when there are server redirects.
     const mainDocumentRequest = NetworkAnalyzer.findMainDocument(networkRecords);
     const mainDocumentNode = networkNodeOutput.idToNodeMap.get(mainDocumentRequest.requestId);
 
     if (!rootNode || !mainDocumentNode) {
       // Should always be found.
       throw new Error(`${rootNode ? 'mainDocument' : 'root'}Node not found.`);
+    }
+
+    if (mainDocumentNode !== rootNode &&
+        (!mainDocumentNode.record.redirects ||
+        !mainDocumentNode.record.redirects.includes(rootNode.record))) {
+      throw new Error('Root node was not in redirect chain of mainDocument');
     }
 
     PageDependencyGraph.linkNetworkNodes(rootNode, networkNodeOutput);

@@ -7,17 +7,18 @@
 
 const isDeepEqual = require('lodash.isequal');
 const Driver = require('./gather/driver.js');
-const GatherRunner = require('./gather/gather-runner');
-const ReportScoring = require('./scoring');
-const Audit = require('./audits/audit');
+const GatherRunner = require('./gather/gather-runner.js');
+const ReportScoring = require('./scoring.js');
+const Audit = require('./audits/audit.js');
 const log = require('lighthouse-logger');
 const i18n = require('./lib/i18n/i18n.js');
-const assetSaver = require('./lib/asset-saver');
+const stackPacks = require('./lib/stack-packs.js');
+const assetSaver = require('./lib/asset-saver.js');
 const fs = require('fs');
 const path = require('path');
-const URL = require('./lib/url-shim');
-const Sentry = require('./lib/sentry');
-const generateReport = require('./report/report-generator').generateReport;
+const URL = require('./lib/url-shim.js');
+const Sentry = require('./lib/sentry.js');
+const generateReport = require('./report/report-generator.js').generateReport;
 const LHError = require('./lib/lh-error.js');
 
 /** @typedef {import('./gather/connections/connection.js')} Connection */
@@ -30,8 +31,8 @@ class Runner {
    * @return {Promise<LH.RunnerResult|undefined>}
    */
   static async run(connection, runOpts) {
+    const settings = runOpts.config.settings;
     try {
-      const settings = runOpts.config.settings;
       const runnerStatus = {msg: 'Runner setup', id: 'lh:runner:run'};
       log.time(runnerStatus, 'verbose');
 
@@ -147,6 +148,7 @@ class Runner {
           rendererFormattedStrings: i18n.getRendererFormattedStrings(settings.locale),
           icuMessagePaths: {},
         },
+        stackPacks: stackPacks.getStackPacks(artifacts.Stacks),
       };
 
       // Replace ICU message references with localized strings; save replaced paths in lhr.
@@ -157,6 +159,8 @@ class Runner {
 
       return {lhr, artifacts, report};
     } catch (err) {
+      // i18n error strings
+      err.friendlyMessage = i18n.getFormatted(err.friendlyMessage, settings.locale);
       await Sentry.captureException(err, {level: 'fatal'});
       throw err;
     }
@@ -177,7 +181,19 @@ class Runner {
       ...timingEntriesFromRunner,
       // As entries can share a name, dedupe based on the startTime timestamp
     ].map(entry => /** @type {[number, PerformanceEntry]} */ ([entry.startTime, entry]));
-    const timingEntries = Array.from(new Map(timingEntriesKeyValues).values());
+    const timingEntries = Array.from(new Map(timingEntriesKeyValues).values())
+    // Truncate timestamps to hundredths of a millisecond saves ~4KB. No need for microsecond
+    // resolution.
+    .map(entry => {
+      return /** @type {PerformanceEntry} */ ({
+        // Don't spread entry because browser PerformanceEntries can't be spread.
+        // https://github.com/GoogleChrome/lighthouse/issues/8638
+        startTime: parseFloat(entry.startTime.toFixed(2)),
+        name: entry.name,
+        duration: parseFloat(entry.duration.toFixed(2)),
+        entryType: entry.entryType,
+      });
+    });
     const runnerEntry = timingEntries.find(e => e.name === 'lh:runner:run');
     return {entries: timingEntries, total: runnerEntry && runnerEntry.duration || 0};
   }
@@ -193,7 +209,6 @@ class Runner {
     if (!runnerOpts.config.passes) {
       throw new Error('No browser artifacts are either provided or requested.');
     }
-
     const driver = runnerOpts.driverMock || new Driver(connection);
     const gatherOpts = {
       driver,
@@ -222,11 +237,11 @@ class Runner {
         gatherMode: undefined,
         auditMode: undefined,
         output: undefined,
+        budgets: undefined,
       };
       const normalizedGatherSettings = Object.assign({}, artifacts.settings, overrides);
       const normalizedAuditSettings = Object.assign({}, settings, overrides);
 
-      // TODO(phulce): allow change of throttling method to `simulate`
       if (!isDeepEqual(normalizedGatherSettings, normalizedAuditSettings)) {
         throw new Error('Cannot change settings between gathering and auditing');
       }
@@ -262,7 +277,7 @@ class Runner {
   static async _runAudit(auditDefn, artifacts, sharedAuditContext) {
     const audit = auditDefn.implementation;
     const status = {
-      msg: `Evaluating: ${i18n.getFormatted(audit.meta.title, 'en-US')}`,
+      msg: `Auditing: ${i18n.getFormatted(audit.meta.title, 'en-US')}`,
       id: `lh:audit:${audit.meta.id}`,
     };
     log.time(status);
@@ -313,16 +328,22 @@ class Runner {
         ...sharedAuditContext,
       };
 
-      const product = await audit.audit(artifacts, auditContext);
+      // Only pass the declared `requiredArtifacts` to the audit
+      // The type is masquerading as `LH.Artifacts` but will only contain a subset of the keys
+      // to prevent consumers from unnecessary type assertions.
+      const requiredArtifacts = audit.meta.requiredArtifacts
+        .reduce((requiredArtifacts, artifactName) => {
+          requiredArtifacts[artifactName] = artifacts[artifactName];
+          return requiredArtifacts;
+        }, /** @type {LH.Artifacts} */ ({}));
+      const product = await audit.audit(requiredArtifacts, auditContext);
       auditResult = Audit.generateAuditResult(audit, product);
     } catch (err) {
       log.warn(audit.meta.id, `Caught exception: ${err.message}`);
 
       Sentry.captureException(err, {tags: {audit: audit.meta.id}, level: 'error'});
       // Errors become error audit result.
-      const errorMessage = err.friendlyMessage ?
-        `${err.friendlyMessage} (${err.message})` :
-        `Audit error: ${err.message}`;
+      const errorMessage = err.friendlyMessage ? err.friendlyMessage : err.message;
       auditResult = Audit.generateErrorAuditResult(audit, errorMessage);
     }
 
@@ -333,7 +354,7 @@ class Runner {
   /**
    * Returns first runtimeError found in artifacts.
    * @param {LH.Artifacts} artifacts
-   * @return {LH.Result['runtimeError']}
+   * @return {LH.Result['runtimeError']|undefined}
    */
   static getArtifactRuntimeError(artifacts) {
     for (const possibleErrorArtifact of Object.values(artifacts)) {
@@ -347,10 +368,7 @@ class Runner {
       }
     }
 
-    return {
-      code: LHError.NO_ERROR,
-      message: '',
-    };
+    return undefined;
   }
 
   /**
@@ -398,52 +416,6 @@ class Runner {
           .map(f => `dobetterweb/${f}`),
     ];
     return fileList.filter(f => /\.js$/.test(f) && f !== 'gatherer.js').sort();
-  }
-
-  /**
-   * Resolves the location of the specified plugin and returns an absolute
-   * string path to the file. Used for loading custom audits and gatherers.
-   * Throws an error if no plugin is found.
-   * @param {string} plugin
-   * @param {string=} configDir The absolute path to the directory of the config file, if there is one.
-   * @param {string=} category Optional plugin category (e.g. 'audit') for better error messages.
-   * @return {string}
-   * @throws {Error}
-   */
-  static resolvePlugin(plugin, configDir, category) {
-    // First try straight `require()`. Unlikely to be specified relative to this
-    // file, but adds support for Lighthouse plugins in npm modules as
-    // `require()` walks up parent directories looking inside any node_modules/
-    // present. Also handles absolute paths.
-    try {
-      return require.resolve(plugin);
-    } catch (e) {}
-
-    // See if the plugin resolves relative to the current working directory.
-    // Most useful to handle the case of invoking Lighthouse as a module, since
-    // then the config is an object and so has no path.
-    const cwdPath = path.resolve(process.cwd(), plugin);
-    try {
-      return require.resolve(cwdPath);
-    } catch (e) {}
-
-    const errorString = 'Unable to locate ' +
-        (category ? `${category}: ` : '') +
-        `${plugin} (tried to require() from '${__dirname}' and load from '${cwdPath}'`;
-
-    if (!configDir) {
-      throw new Error(errorString + ')');
-    }
-
-    // Finally, try looking up relative to the config file path. Just like the
-    // relative path passed to `require()` is found relative to the file it's
-    // in, this allows plugin paths to be specified relative to the config file.
-    const relativePath = path.resolve(configDir, plugin);
-    try {
-      return require.resolve(relativePath);
-    } catch (requireError) {}
-
-    throw new Error(errorString + ` and '${relativePath}')`);
   }
 
   /**
