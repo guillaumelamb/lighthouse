@@ -154,7 +154,7 @@
     "lookup-closest-locale": "6.0.4",
     "metaviewport-parser": "0.2.0",
     "mkdirp": "0.5.1",
-    "opn": "4.0.2",
+    "opn": "6.0.0",
     "parse-cache-control": "1.0.1",
     "raven": "^2.2.1",
     "rimraf": "^2.6.1",
