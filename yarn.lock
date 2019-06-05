@@ -4118,10 +4118,10 @@ iconv-lite@0.4.24, iconv-lite@~0.4.13:
   dependencies:
     safer-buffer ">= 2.1.2 < 3"
 
-idb-keyval@2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/idb-keyval/-/idb-keyval-2.2.0.tgz#b28020d53e3cf1621e3ec605e57e5305f37b195e"
-  integrity sha1-soAg1T488WIePsYF5X5TBfN7GV4=
+idb-keyval@3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/idb-keyval/-/idb-keyval-3.2.0.tgz#cbbf354deb5684b6cdc84376294fc05932845bd6"
+  integrity sha512-slx8Q6oywCCSfKgPgL0sEsXtPVnSbTLWpyiDcu6msHOyKOLari1TD1qocXVCft80umnkk3/Qqh3lwoFt8T/BPQ==
 
 ieee754@^1.1.4:
   version "1.1.12"
