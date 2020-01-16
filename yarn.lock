@@ -735,12 +735,11 @@
   resolved "https://registry.yarnpkg.com/@types/update-notifier/-/update-notifier-1.0.2.tgz#7a9269a38545bfd90155aac1350669a19f8ecb4a"
   integrity sha512-NwfqJ7OT7MgzgV+SiWJr7jMdBezFIWuBSmCOmScvesL/SV8A17SUQR0sCI+shxo+4THHPNGgzaLzfbjQMYLHFA==
 
-"@types/ws@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-4.0.1.tgz#3309d4d02a1ea9cf617d638b9239a2e1e28ef21e"
-  integrity sha512-J56Wn8j7ovzmlrkUSPXnVRH+YXUCGoVokiB49QIjz+yq0234guOrBvF/HHrqrJjnY4p5oq+q6xAxT/7An6SeWQ==
+"@types/ws@^7.2.0":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-7.2.0.tgz#ed94695be01a77efd590244fc17c3b730e75d88a"
+  integrity sha512-HnqczxiZ828df9FUh9OyY7vSOelpQNaj+SLEnDvU74rYijp61ggV7dhmDlMky0oYXKLdVuIG4KvExk8DEqzJgQ==
   dependencies:
-    "@types/events" "*"
     "@types/node" "*"
 
 "@types/yargs@^12.0.2", "@types/yargs@^12.0.9":
