@@ -92,7 +92,7 @@
     "@types/semver": "^5.5.0",
     "@types/uglify-es": "^3.0.0",
     "@types/update-notifier": "^1.0.2",
-    "@types/ws": "^4.0.1",
+    "@types/ws": "^7.2.6",
     "@types/yargs": "^8.0.2",
     "angular": "^1.7.4",
     "archiver": "^3.0.0",
