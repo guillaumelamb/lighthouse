@@ -1,0 +1,36 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: "@firebase/util"
+    versions:
+    - 0.3.4
+    - 0.4.0
+    - 0.4.1
+  - dependency-name: "@types/ws"
+    versions:
+    - 7.4.0
+    - 7.4.1
+  - dependency-name: ws
+    versions:
+    - 7.4.2
+    - 7.4.3
+    - 7.4.4
+  - dependency-name: idb-keyval
+    versions:
+    - 5.0.2
+    - 5.0.4
+  - dependency-name: update-notifier
+    versions:
+    - 5.0.1
+  - dependency-name: elliptic
+    versions:
+    - 6.5.3
+  - dependency-name: handlebars
+    versions:
+    - 4.7.6
